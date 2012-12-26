@@ -14,6 +14,8 @@ extern cstart
 extern kernel_main
 extern spurious_irq
 extern exception_handler
+extern disp_str
+extern delay
 
 ; improt global variables
 extern gdt_ptr
@@ -21,8 +23,13 @@ extern idt_ptr
 extern p_proc_ready
 extern tss
 extern disp_pos
+extern k_reenter
 
 bits 32
+
+[SECTION .data]
+clock_int_msg	db	"^", 0
+
 [SECTION .bss]
 StackSpace	resb 2 * 1024
 StackTop:
@@ -107,11 +114,36 @@ hwint00:
 	push gs
 	mov dx, ss
 	mov ds, dx
-	mov es, dx
+	mov es, dx	
+
+	inc byte [gs:0]
+
+	mov al, EOI
+	out INT_M_CTL, al
+
+	inc dword [k_reenter]
+	cmp dword [k_reenter], 0
+	jne .re_enter
+
+	mov esp, StackTop
+
+	sti
+
+	push clock_int_msg
+	call disp_str
+	add esp, 4
+
+;	push 10
+;	call delay
+;	add esp, 4
+
+	mov esp, [p_proc_ready]
 	
 	lea eax, [esp + P_STACKTOP]
 	mov dword [tss + TSS3_S_SP0], eax
 
+.re_enter:
+	dec dword [k_reenter]
 	pop gs
 	pop fs
 	pop es
