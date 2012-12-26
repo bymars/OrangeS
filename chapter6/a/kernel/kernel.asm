@@ -108,11 +108,6 @@ hwint00:
 	mov dx, ss
 	mov ds, dx
 	mov es, dx
-
-	inc byte [gs:0]
-
-	mov al, EOI
-	out INT_M_CTL, al
 	
 	lea eax, [esp + P_STACKTOP]
 	mov dword [tss + TSS3_S_SP0], eax
