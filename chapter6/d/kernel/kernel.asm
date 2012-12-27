@@ -14,6 +14,7 @@ extern cstart
 extern kernel_main
 extern spurious_irq
 extern exception_handler
+extern clock_handler
 extern disp_str
 extern delay
 
@@ -128,17 +129,20 @@ hwint00:
 	mov esp, StackTop
 
 	sti
-
-	push clock_int_msg
-	call disp_str
+	push 0
+	call clock_handler
 	add esp, 4
+
+;	push clock_int_msg
+;	call disp_str
+;	add esp, 4
 
 ;	push 10
 ;	call delay
 ;	add esp, 4
 
 	mov esp, [p_proc_ready]
-	
+	lldt [esp + P_LDT_SEL]
 	lea eax, [esp + P_STACKTOP]
 	mov dword [tss + TSS3_S_SP0], eax
 
