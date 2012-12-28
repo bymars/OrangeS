@@ -26,6 +26,7 @@ extern tss
 extern disp_pos
 extern k_reenter
 extern irq_table
+extern sys_call_table
 
 bits 32
 
@@ -75,6 +76,7 @@ global hwint12
 global hwint13
 global hwint14
 global hwint15
+global sys_call
 
 _start:
 
@@ -273,17 +275,28 @@ save:
 	mov ds, dx
 	mov es, dx	
 	
-	mov eax, esp
+	mov esi, esp
 
 	inc dword [k_reenter]
 	cmp dword [k_reenter], 0	
 	jne .1
 	mov esp, StackTop
 	push restart
-	jmp [eax + RETADR - P_STACKBASE]
+	jmp [esi + RETADR - P_STACKBASE]
 .1:
 	push restart_reenter
-	jmp [eax + RETADR - P_STACKBASE]
+	jmp [esi + RETADR - P_STACKBASE]
+
+; =========================================================
+; 			sys_call
+; ========================================================
+sys_call:
+	call save
+	sti
+	call [sys_call_table + eax * 4]
+	mov [esi + EAXREG - P_STACKBASE], eax
+	cli
+	ret
 
 ; =========================================================
 ;                   restart
