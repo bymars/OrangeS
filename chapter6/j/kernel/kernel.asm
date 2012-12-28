@@ -109,6 +109,10 @@ ALIGN	16
 hwint00:
 	call save
 
+	in al, INT_M_CTLMASK
+	or al, 1
+	out INT_M_CTLMASK, al
+
 	mov al, EOI
 	out INT_M_CTL, al
 
@@ -117,6 +121,10 @@ hwint00:
 	call clock_handler
 	add esp, 4
 	cli
+
+	in al, INT_M_CTLMASK
+	and al, 0xFE
+	out INT_M_CTLMASK,al
 	
 	ret
 
