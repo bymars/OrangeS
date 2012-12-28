@@ -54,6 +54,10 @@ PUBLIC int kernel_main()
 	k_reenter = 0;
 
 	p_proc_ready = proc_table;
+
+	put_irq_handler(CLOCK_IRQ, clock_handler);
+	enable_irq(CLOCK_IRQ);
+
 	restart();
 
 	while(1){}

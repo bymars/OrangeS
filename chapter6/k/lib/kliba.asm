@@ -1,3 +1,4 @@
+%include "sconst.inc"
 ; import global variables
 extern disp_pos
 
@@ -8,7 +9,9 @@ global disp_str
 global disp_color_str
 global out_byte
 global in_byte
-; END of SECTION
+global enable_irq
+global disable_irq
+; END of SECTION .text
 
 ; ==========================================================
 ; void disp_str(char* pszInfo);
@@ -105,5 +108,63 @@ in_byte:
 	in al, dx
 	nop
 	nop
+	ret
+
+; =====================================================================
+; void disable_irq(int irq)
+; =====================================================================
+disable_irq:
+	mov 	ecx, [esp + 4]
+	pushf
+	cli
+	mov 	ah, 1
+	rol	ah, cl
+	cmp 	cl, 8
+	jae	disable_8
+disable_0:
+	in 	al, INT_M_CTLMASK
+	test	al, ah
+	jnz	dis_already
+	or 	al, ah
+	out	INT_M_CTLMASK, al
+	popf
+	mov 	eax, 1
+	ret
+disable_8:
+	in	al, INT_S_CTLMASK
+	test	al, ah
+	jnz	dis_already
+	or 	al, ah
+	out	INT_S_CTLMASK, al
+	popf
+	mov 	eax, 1
+	ret
+dis_already:
+	popf
+	xor	eax, eax
+	ret
+
+; ==========================================================
+; 		void enable_irq(int irq);
+; ==========================================================
+enable_irq:
+	mov	ecx, [esp + 4]
+	pushf
+	cli	
+	mov 	ah, ~1
+	rol	ah, cl
+	cmp 	cl, 8
+	jae	enable_8
+enable_0:
+	in 	al, INT_M_CTLMASK
+	and	al, ah
+	out	INT_M_CTLMASK, al
+	popf
+	ret
+enable_8:
+	in	al, INT_S_CTLMASK
+	and	al, ah
+	out	INT_S_CTLMASK, al
+	popf
 	ret
 
