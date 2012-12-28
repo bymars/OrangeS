@@ -107,58 +107,18 @@ csinit:
 ; ------------------------------------
 ALIGN	16
 hwint00:
-	sub esp, 4
-	pushad
-	push ds
-	push es
-	push fs
-	push gs
-	mov dx, ss
-	mov ds, dx
-	mov es, dx	
-
-	inc byte [gs:0]
+	call save
 
 	mov al, EOI
 	out INT_M_CTL, al
 
-	inc dword [k_reenter]
-	cmp dword [k_reenter], 0	
-	jne .1
-
-	mov esp, StackTop
-	
-	push restart
-	jmp .2
-.1:
-	push restart_reenter
-.2:
 	sti
-
 	push 0
 	call clock_handler
 	add esp, 4
-	
 	cli
 	
 	ret
-
-;.restart_v2:
-;	mov esp, [p_proc_ready]
-;	lldt [esp + P_LDT_SEL]
-;	lea eax, [esp + P_STACKTOP]
-;	mov dword [tss + TSS3_S_SP0], eax
-
-;.restart_reenter_v2:
-;	dec dword [k_reenter]
-;	pop gs
-;	pop fs
-;	pop es
-;	pop ds
-;	popad
-;	add esp, 4
-;
-;	iretd
 
 ALIGN	16
 hwint01:
@@ -292,6 +252,31 @@ exception:
 	call exception_handler
 	add esp, 4 * 2
 	hlt
+
+; =========================================================
+;	save
+; =========================================================
+save:
+	pushad
+	push ds
+	push es
+	push fs
+	push gs
+	mov dx, ss
+	mov ds, dx
+	mov es, dx	
+	
+	mov eax, esp
+
+	inc dword [k_reenter]
+	cmp dword [k_reenter], 0	
+	jne .1
+	mov esp, StackTop
+	push restart
+	jmp [eax + RETADR - P_STACKBASE]
+.1:
+	push restart_reenter
+	jmp [eax + RETADR - P_STACKBASE]
 
 ; =========================================================
 ;                   restart
