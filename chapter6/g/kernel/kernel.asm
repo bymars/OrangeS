@@ -123,30 +123,33 @@ hwint00:
 	out INT_M_CTL, al
 
 	inc dword [k_reenter]
-	cmp dword [k_reenter], 0
-	jne .re_enter
+	cmp dword [k_reenter], 0	
+	jne .1
 
 	mov esp, StackTop
-
+	
+	push .restart_v2
+	jmp .2
+.1:
+	push .restart_reenter_v2
+.2:
 	sti
+
 	push 0
 	call clock_handler
 	add esp, 4
+	
+	cli
+	
+	ret
 
-;	push clock_int_msg
-;	call disp_str
-;	add esp, 4
-
-;	push 10
-;	call delay
-;	add esp, 4
-
+.restart_v2:
 	mov esp, [p_proc_ready]
 	lldt [esp + P_LDT_SEL]
 	lea eax, [esp + P_STACKTOP]
 	mov dword [tss + TSS3_S_SP0], eax
 
-.re_enter:
+.restart_reenter_v2:
 	dec dword [k_reenter]
 	pop gs
 	pop fs

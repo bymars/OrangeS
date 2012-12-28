@@ -69,7 +69,7 @@ void TestA()
 		disp_str("A");
 		disp_int(i++);
 		disp_str(".");
-		delay(1);
+		delay(10);
 	}
 }
 
@@ -83,7 +83,7 @@ void TestB()
 		disp_str("B");
 		disp_int(i++);
 		disp_str(".");
-		delay(1);
+		delay(10);
 	}
 }
 /*====================================================*
@@ -96,6 +96,6 @@ void TestC()
 		disp_str("C");
 		disp_int(i++);
 		disp_str(".");
-		delay(1);
+		delay(10);
 	}
 }
