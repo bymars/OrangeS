@@ -128,10 +128,10 @@ hwint00:
 
 	mov esp, StackTop
 	
-	push .restart_v2
+	push restart
 	jmp .2
 .1:
-	push .restart_reenter_v2
+	push restart_reenter
 .2:
 	sti
 
@@ -143,22 +143,22 @@ hwint00:
 	
 	ret
 
-.restart_v2:
-	mov esp, [p_proc_ready]
-	lldt [esp + P_LDT_SEL]
-	lea eax, [esp + P_STACKTOP]
-	mov dword [tss + TSS3_S_SP0], eax
+;.restart_v2:
+;	mov esp, [p_proc_ready]
+;	lldt [esp + P_LDT_SEL]
+;	lea eax, [esp + P_STACKTOP]
+;	mov dword [tss + TSS3_S_SP0], eax
 
-.restart_reenter_v2:
-	dec dword [k_reenter]
-	pop gs
-	pop fs
-	pop es
-	pop ds
-	popad
-	add esp, 4
-
-	iretd
+;.restart_reenter_v2:
+;	dec dword [k_reenter]
+;	pop gs
+;	pop fs
+;	pop es
+;	pop ds
+;	popad
+;	add esp, 4
+;
+;	iretd
 
 ALIGN	16
 hwint01:
@@ -301,7 +301,8 @@ restart:
 	lldt [esp + P_LDT_SEL]
 	lea eax, [esp + P_STACKTOP]
 	mov dword [tss + TSS3_S_SP0], eax
-	
+restart_reenter:
+	dec dword [k_reenter]
 	pop gs
 	pop fs
 	pop es
