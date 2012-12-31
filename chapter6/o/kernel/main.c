@@ -76,10 +76,8 @@ void TestA()
 {
 	while(1)
 	{
-		disp_str("A");
-		disp_int(get_ticks());
-		disp_str(".");
-		milli_delay(1000);
+		disp_str("A.");
+		milli_delay(300);
 	}
 }
 
@@ -90,10 +88,8 @@ void TestB()
 {
 	int i = 0x1000;
 	while(1){
-		disp_str("B");
-		disp_int(i++);
-		disp_str(".");
-		delay(1);
+		disp_str("B.");
+		milli_delay(900);
 	}
 }
 /*====================================================*
@@ -103,9 +99,7 @@ void TestC()
 {
 	int i = 0x2000;
 	while (1) {
-		disp_str("C");
-		disp_int(i++);
-		disp_str(".");
-		delay(1);
+		disp_str("C.");
+		milli_delay(1500);
 	}
 }
