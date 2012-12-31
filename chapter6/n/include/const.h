@@ -36,6 +36,13 @@
 #define INT_S_CTL	0xA0
 #define INT_S_CTLMASK	0xA1
 
+/* 8253/8254 PIT */
+#define TIMER0		0x40
+#define TIMER_MODE	0x43
+#define RATE_GENERATOR	0x34
+#define TIMER_FREQ	1193182L
+#define HZ		100
+
 /* Hardware interrupt*/
 #define NR_IRQ		16
 #define CLOCK_IRQ	0

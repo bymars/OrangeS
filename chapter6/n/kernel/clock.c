@@ -29,3 +29,12 @@ PUBLIC void clock_handler(int irq)
 		p_proc_ready = proc_table;
 	}
 }
+
+/*=============================================================*
+		milli_delay
+/*============================================================*/
+PUBLIC void milli_delay(int milli_sec)
+{
+	int t = get_ticks();
+	while (((get_ticks() - t) * 1000 / HZ) < milli_sec) {}
+}
