@@ -51,6 +51,10 @@ PUBLIC int kernel_main()
 		selector_ldt += 1 << 3;
 	}
 
+	proc_table[0].ticks = proc_table[0].priority = 150;
+	proc_table[0].ticks = proc_table[1].priority = 50;
+	proc_table[0].ticks = proc_table[2].priority = 30;
+
 	k_reenter = 0;
 	ticks = 0;
 
@@ -60,7 +64,7 @@ PUBLIC int kernel_main()
 	/* init 8253_PIT */
 	out_byte(TIMER_MODE, RATE_GENERATOR);
 	out_byte(TIMER0, (u8)(TIMER_FREQ/HZ));
-	out_byte(TIMER0, (u8)(TIMER_FREQ/HZ) >> 8);
+	out_byte(TIMER0, (u8)((TIMER_FREQ/HZ) >> 8));
 
 	put_irq_handler(CLOCK_IRQ, clock_handler);
 	enable_irq(CLOCK_IRQ);
@@ -77,7 +81,7 @@ void TestA()
 	while(1)
 	{
 		disp_str("A.");
-		milli_delay(300);
+		milli_delay(200);
 	}
 }
 
@@ -89,7 +93,7 @@ void TestB()
 	int i = 0x1000;
 	while(1){
 		disp_str("B.");
-		milli_delay(900);
+		milli_delay(200);
 	}
 }
 /*====================================================*
@@ -100,6 +104,6 @@ void TestC()
 	int i = 0x2000;
 	while (1) {
 		disp_str("C.");
-		milli_delay(1500);
+		milli_delay(200);
 	}
 }
