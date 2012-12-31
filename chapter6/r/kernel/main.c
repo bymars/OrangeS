@@ -51,9 +51,9 @@ PUBLIC int kernel_main()
 		selector_ldt += 1 << 3;
 	}
 
-	proc_table[0].ticks = proc_table[0].priority = 150;
-	proc_table[1].ticks = proc_table[1].priority = 50;
-	proc_table[2].ticks = proc_table[2].priority = 30;
+	proc_table[0].ticks = proc_table[0].priority = 15;
+	proc_table[1].ticks = proc_table[1].priority = 5;
+	proc_table[2].ticks = proc_table[2].priority = 3;
 
 	k_reenter = 0;
 	ticks = 0;
@@ -69,11 +69,6 @@ PUBLIC int kernel_main()
 	put_irq_handler(CLOCK_IRQ, clock_handler);
 	enable_irq(CLOCK_IRQ);
 
-	disp_pos = 0;
-	for (i = 0; i < 80 * 25; i++) {
-		disp_str(" ");
-	}
-	disp_pos = 0;	
 	restart();
 
 	while(1){}
@@ -86,8 +81,7 @@ void TestA()
 	while(1)
 	{
 		disp_color_str("A.", BRIGHT | MAKE_COLOR(BLACK, RED));
-		disp_int(get_ticks());
-		milli_delay(200);
+		milli_delay(10);
 	}
 }
 
@@ -98,9 +92,8 @@ void TestB()
 {
 	int i = 0x1000;
 	while(1){
-		disp_color_str("A.", BRIGHT | MAKE_COLOR(BLACK, RED));
-		disp_int(get_ticks());
-		milli_delay(200);
+		disp_color_str("B.", BRIGHT | MAKE_COLOR(BLACK, RED));
+		milli_delay(10);
 	}
 }
 /*====================================================*
@@ -111,7 +104,6 @@ void TestC()
 	int i = 0x2000;
 	while (1) {
 		disp_color_str("C.", BRIGHT | MAKE_COLOR(BLACK, RED));
-		disp_int(get_ticks());
-		milli_delay(200);
+		milli_delay(10);
 	}
 }
