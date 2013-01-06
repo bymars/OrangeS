@@ -22,7 +22,8 @@ DASMFLAGS	= -u -o $(ENTRYPOINT) -e $(ENTRYOFFSET)
 # This Program
 ORANGESBOOT 	= boot/boot.bin boot/loader.bin
 ORANGESKERNEL	= kernel.bin
-OBJS		= kernel/kernel.o kernel/syscall.o kernel/start.o kernel/main.o kernel/clock.o\
+OBJS		= kernel/kernel.o kernel/syscall.o kernel/start.o kernel/main.o\
+			kernel/clock.o kernel/keyboard.o\
 			kernel/i8259.o kernel/global.o kernel/protect.o kernel/proc.o\
 			lib/kliba.o lib/klib.o lib/string.o
 DASMOUTPUT	= kernel.bin.asm
@@ -31,6 +32,8 @@ DASMOUTPUT	= kernel.bin.asm
 .PHONY : everything final image clean realclean disasm all buildimg
 
 # Default staring position
+nop :
+	@echo "why not \'make image' huh? :)"
 everything : $(ORANGESBOOT) $(ORANGESKERNEL)
 
 all : realclean everything
@@ -89,8 +92,10 @@ kernel/protect.o : kernel/protect.c include/type.h include/const.h include/prote
 	include/proc.h include/proto.h include/global.h
 	$(CC) $(CFLAGS) -o $@ $<
 
-kernel/clock.o : kernel/clock.c include/type.h include/const.h include/protect.h \
-	include/proc.h include/proto.h include/global.h include/string.h
+kernel/clock.o : kernel/clock.c
+	$(CC) $(CFLAGS) -o $@ $<
+
+kernel/keyboard.o : kernel/keyboard.c
 	$(CC) $(CFLAGS) -o $@ $<
 
 kernel/proc.o : kernel/proc.c include/type.h include/const.h include/protect.h \
