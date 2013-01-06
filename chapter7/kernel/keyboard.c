@@ -11,7 +11,7 @@
  *==================================================*/
 PUBLIC void keyboard_handler(int irq)
 {
-	disp_str("*");
+//	disp_str("*");
 	u8 scan_code = in_byte(0x60);
 	disp_int(scan_code);
 }

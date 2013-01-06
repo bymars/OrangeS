@@ -1,9 +1,7 @@
-
-/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-                            start.c
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-                                                    Forrest Yu, 2005
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+/**********************************************************************
+ *start.c
+ *author: liu, linhong
+ *********************************************************************/
 
 #include "type.h"
 #include "const.h"
@@ -13,32 +11,31 @@
 #include "proc.h"
 #include "global.h"
 
-
-/*======================================================================*
-                            cstart
- *======================================================================*/
-PUBLIC void cstart()
+PUBLIC void cstart() 
 {
-	disp_str("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n-----\"cstart\" begins-----\n");
+	disp_str("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
+		"-----\"cstart\" begins-----\n");
 
-	// 将 LOADER 中的 GDT 复制到新的 GDT 中
-	memcpy(	&gdt,				    // New GDT
-		(void*)(*((u32*)(&gdt_ptr[2]))),   // Base  of Old GDT
-		*((u16*)(&gdt_ptr[0])) + 1	    // Limit of Old GDT
-		);
-	// gdt_ptr[6] 共 6 个字节：0~15:Limit  16~47:Base。用作 sgdt 以及 lgdt 的参数。
+	/* copy gdt in loader to new gdt in kernel */
+	memcpy(&gdt,       /*base of new gdt*/
+		(void*)(*((u32*)(&gdt_ptr[2]))), /*base of old gdt*/
+		*((u16*)(&gdt_ptr[0])) + 1   /*limit of old gdt*/
+	);
+	/* now the entry in old gdt is copy to new gdt*/
+	/* assemble code 'sgdt [gdt_ptr]' store gdtr to gdt_ptr*/
+	/* here, change the value of gdt_ptr, then lgdt will load new gdt*/
 	u16* p_gdt_limit = (u16*)(&gdt_ptr[0]);
-	u32* p_gdt_base  = (u32*)(&gdt_ptr[2]);
+	u32* p_gdt_base = (u32*)(&gdt_ptr[2]);
 	*p_gdt_limit = GDT_SIZE * sizeof(DESCRIPTOR) - 1;
-	*p_gdt_base  = (u32)&gdt;
+	*p_gdt_base = (u32)&gdt;
 
-	// idt_ptr[6] 共 6 个字节：0~15:Limit  16~47:Base。用作 sidt 以及 lidt 的参数。
+	/* the same with IDT */
 	u16* p_idt_limit = (u16*)(&idt_ptr[0]);
-	u32* p_idt_base  = (u32*)(&idt_ptr[2]);
+	u32* p_idt_base = (u32*)(&idt_ptr[2]);
 	*p_idt_limit = IDT_SIZE * sizeof(GATE) - 1;
-	*p_idt_base  = (u32)&idt;
+	*p_idt_base = (u32)&idt;
 
 	init_prot();
 
-	disp_str("-----\"cstart\" finished-----\n");
+	disp_str("-----\"cstart\" ends-----\n");
 }
