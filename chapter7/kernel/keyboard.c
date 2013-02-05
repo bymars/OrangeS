@@ -61,13 +61,11 @@ PUBLIC void init_keyboard()
 PUBLIC void keyboard_read()
 {
 	u8 scan_code;
-	char output[2];
 	int make;
 
 	u32 key = 0;
 	u32 *keyrow;
 	
-	memset(output, 0, 2);
 	if (kb_in.count > 0) 
 	{
 		code_with_E0 = 0;
@@ -126,35 +124,35 @@ PUBLIC void keyboard_read()
 			switch(key) {
 				case SHIFT_L :
 					shift_l = make;
-					key = 0;
 					break;	
 				case SHIFT_R :
 					shift_r = make;
-					key = 0;
 					break;
 				case CTRL_L :
 					ctrl_l = make;
-					key = 0;
 					break;
 				case CTRL_R :
 					ctrl_r = make;
-					key = 0;
 					break;
 				case ALT_L :
 					alt_l = make;
-					key = 0;
 					break;
 				case ALT_R :
 					alt_r = make;
-					key = 0;
 					break;
 				default :
-					if (!make) key = 0;
 					break;
 			}
-			if (key) {
-				output[0] = key;
-				disp_str(output);
+
+			if (make) {
+				key |= shift_l ? FLAG_SHIFT_L : 0;
+				key |= shift_r ? FLAG_SHIFT_R : 0;
+				key |= alt_l ? FLAG_SHIFT_L : 0;
+				key |= alt_r ? FLAG_SHIFT_R : 0;
+				key |= ctrl_l ? FLAG_CTRL_L : 0;
+				key |= ctrl_r ? FLAG_CTRL_R : 0;
+				
+				in_process(key);
 			}
 		}
 		//disp_int(scan_code);
