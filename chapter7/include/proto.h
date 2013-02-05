@@ -37,6 +37,9 @@ PUBLIC void init_clock();
 /* keyboard.c */
 PUBLIC void init_keyboard();
 
+/* tty.c */
+PUBLIC void task_tty();
+
 /* 以下是系统调用相关 */
 
 /* proc.c */
