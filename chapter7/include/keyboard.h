@@ -11,7 +11,7 @@
 /************************************************************************/
 #define KB_IN_BYTES 	32	/* size of keyboard input buffer */
 #define MAP_COLS	3	/* Number of columns in keymap */
-#define NR_SCAN_CODE	0x80	/* Number of scan codes (rows in keymap) */
+#define NR_SCAN_CODES	0x80	/* Number of scan codes (rows in keymap) */
 
 #define FLAG_BREAK	0x0080		/* Break Code			*/
 #define FLAG_EXT	0x0100		/* Normal function keys		*/

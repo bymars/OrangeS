@@ -6,6 +6,7 @@
 #include "proc.h"
 #include "global.h"
 #include "keyboard.h"
+#include "keymap.h"
 
 PRIVATE KB_INPUT kb_in;
 /*==================================================*
@@ -46,6 +47,10 @@ PUBLIC void init_keyboard()
 PUBLIC void keyboard_read()
 {
 	u8 scan_code;
+	char output[2];
+	int make;
+	
+	memset(output, 0, 2);
 	if (kb_in.count > 0) 
 	{
 		disable_int();
@@ -57,6 +62,18 @@ PUBLIC void keyboard_read()
 		}
 		kb_in.count--;
 		enable_int();
-		disp_int(scan_code);
+
+		/* 下面开始解析扫描码 */
+		if (scan_code == 0xE1) {
+		} else if (scan_code == 0XE0) {
+
+		} else {
+			make = (scan_code & FLAG_BREAK ? FALSE : TRUE);
+			if (make) {
+				output[0] = keymap[(scan_code & 0x7F) * MAP_COLS];
+				disp_str(output);
+			}
+		}
+		//disp_int(scan_code);
 	}
 }

@@ -12,7 +12,6 @@
 #ifndef	_ORANGES_KEYMAP_H_
 #define	_ORANGES_KEYMAP_H_
 
-
 /* Keymap for US MF-2 keyboard. */
 
 u32 keymap[NR_SCAN_CODES * MAP_COLS] = {
@@ -148,3 +147,4 @@ u32 keymap[NR_SCAN_CODES * MAP_COLS] = {
 /* 0x7E - ???		*/	0,		0,		0,
 /* 0x7F - ???		*/	0,		0,		0
 };
+#endif
